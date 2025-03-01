@@ -146,7 +146,7 @@ TEST(nearest_neighbor_elements, check_int64_t) {
       in[i] = 70;
     }
   }
-  in[20] = -100;
+  in[20] = -5;
   in[21] = -119;
 
   // Create task_data
@@ -165,7 +165,7 @@ TEST(nearest_neighbor_elements, check_int64_t) {
   test_task.PreProcessing();
   test_task.Run();
   test_task.PostProcessing();
-  EXPECT_EQ(out[0], -100);
+  EXPECT_EQ(out[0], -5);
   EXPECT_EQ(out[1], -119);
   EXPECT_EQ(out_index[0], 20ULL);
   EXPECT_EQ(out_index[1], 21ULL);

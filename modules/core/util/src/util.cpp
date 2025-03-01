@@ -19,7 +19,7 @@ std::string ppc::util::GetAbsolutePath(const std::string &relative_path) {
 int ppc::util::GetPPCNumThreads() {
 #ifdef _WIN32
   size_t len;
-  char omp_env[100];
+  char omp_env[5];
   errno_t err = getenv_s(&len, omp_env, sizeof(omp_env), "OMP_NUM_THREADS");
   if (err != 0 || len == 0) {
     omp_env[0] = '\0';
