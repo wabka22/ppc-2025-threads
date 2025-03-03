@@ -8,9 +8,9 @@
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
-#include "seq/chistov_gauss_seq/include/ops_seq.hpp"
+#include "omp/chistov_gauss_omp/include/ops_omp.hpp"
 
-TEST(chistov_gauss_seq, test_pipeline_run) {
+TEST(chistov_gauss_omp, test_pipeline_run) {
   const size_t width = 6000;
   const size_t height = 6000;
 
@@ -30,7 +30,6 @@ TEST(chistov_gauss_seq, test_pipeline_run) {
 
   // Create task_data
 
-
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(kernel.data()));
@@ -41,8 +40,7 @@ TEST(chistov_gauss_seq, test_pipeline_run) {
   task_data_seq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto test_task_sequential =
-      std::make_shared<chistov_gauss_seq::TestTaskSequential>(task_data_seq);
+  auto test_task_sequential = std::make_shared<chistov_gauss_omp::TestTaskOpenMP>(task_data_seq);
 
   // Create Perf attributes
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
@@ -63,7 +61,7 @@ TEST(chistov_gauss_seq, test_pipeline_run) {
   ppc::core::Perf::PrintPerfStatistic(perf_results);
 }
 
-TEST(chistov_gauss_seq, test_task_run) {
+TEST(chistov_gauss_omp, test_task_run) {
   const size_t width = 6000;
   const size_t height = 6000;
 
@@ -93,7 +91,7 @@ TEST(chistov_gauss_seq, test_task_run) {
   task_data_seq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto test_task_sequential = std::make_shared<chistov_gauss_seq::TestTaskSequential>(task_data_seq);
+  auto test_task_sequential = std::make_shared<chistov_gauss_omp::TestTaskOpenMP>(task_data_seq);
 
   // Create Perf attributes
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
