@@ -35,27 +35,20 @@ bool chistov_gauss_omp::TestTaskOpenMP::ValidationImpl() {
 }
 
 bool chistov_gauss_omp::TestTaskOpenMP::RunImpl() {
-  double sum = kernel[0] + kernel[1] + kernel[2];
-  double sum_inv = 1.0 / sum;
+  double sum_inv = 1.0 / (kernel[0] + kernel[1] + kernel[2]);
+  int h = static_cast<int>(height);
+  int w = static_cast<int>(width);
 
-#pragma omp parallel
+#pragma omp parallel firstprivate(sum_inv) shared(w, h) num_threads(8)
   {
-    if (omp_get_thread_num() == 0) {
-      std::cout << "Количество потоков: " << omp_get_num_threads() << std::endl;
-    }
-
 #pragma omp for
-    for (int i = 0; i < static_cast<int>(height); ++i) {
-      for (int j = 0; j < static_cast<int>(width); ++j) {
-        double value = 0.0;
-        for (ptrdiff_t k = -1; k <= 1; ++k) {
-          ptrdiff_t tmp = static_cast<ptrdiff_t>(j) + k;
-          if (tmp >= 0 && tmp < static_cast<ptrdiff_t>(width)) {
-            value += image[(i * width) + tmp] * kernel[k + 1];
-          }
-        }
+    for (int i = 0; i < h; ++i) {
+      for (int j = 0; j < w; ++j) {
+        double pixel_0 = (j > 0) ? image[i * width + (j - 1)] * kernel[0] : 0.0;
+        double pixel_1 = image[i * width + j] * kernel[1];
+        double pixel_2 = (j < width - 1) ? image[i * width + (j + 1)] * kernel[2] : 0.0;
 
-        result_image[(i * width) + j] = value * sum_inv;
+        result_image[i * width + j] = (pixel_0 + pixel_1 + pixel_2) * sum_inv;
       }
     }
   }
