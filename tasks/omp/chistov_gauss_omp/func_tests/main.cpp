@@ -39,8 +39,8 @@ void CompareImages(const std::vector<double>& output_image, const std::vector<do
   }
 }
 
-void RunImageFilterTest(std::shared_ptr<ppc::core::TaskData> task_data_seq) {
-  chistov_gauss_omp::TestTaskOpenMP image_filter_sequential(task_data_seq);
+void RunImageFilterTest(std::shared_ptr<ppc::core::TaskData> task_data_omp) {
+  chistov_gauss_omp::TestTaskOpenMP image_filter_sequential(task_data_omp);
   ASSERT_EQ(image_filter_sequential.Validation(), true);
   image_filter_sequential.PreProcessing();
   image_filter_sequential.Run();
@@ -81,15 +81,15 @@ TEST(chistov_gauss_omp, test_empty_image) {
   std::vector<double> input_image;
   std::vector<double> output_image;
 
-  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
-  task_data_seq->inputs_count.emplace_back(input_image.size());
-  task_data_seq->inputs_count.emplace_back(width);
-  task_data_seq->inputs_count.emplace_back(height);
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
-  task_data_seq->outputs_count.emplace_back(output_image.size());
+  auto task_data_omp = std::make_shared<ppc::core::TaskData>();
+  task_data_omp->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
+  task_data_omp->inputs_count.emplace_back(input_image.size());
+  task_data_omp->inputs_count.emplace_back(width);
+  task_data_omp->inputs_count.emplace_back(height);
+  task_data_omp->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  task_data_omp->outputs_count.emplace_back(output_image.size());
 
-  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_seq);
+  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_omp);
   ASSERT_FALSE(test_task_sequential.Validation());
 }
 
@@ -99,15 +99,15 @@ TEST(chistov_gauss_omp, test_invalid_pixel_values) {
   std::vector<double> input_image = {-1, 50, 200, 255, 300, 0, 128, 255, -10};
   std::vector<double> output_image;
 
-  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
-  task_data_seq->inputs_count.emplace_back(input_image.size());
-  task_data_seq->inputs_count.emplace_back(width);
-  task_data_seq->inputs_count.emplace_back(height);
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
-  task_data_seq->outputs_count.emplace_back(output_image.size());
+  auto task_data_omp = std::make_shared<ppc::core::TaskData>();
+  task_data_omp->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
+  task_data_omp->inputs_count.emplace_back(input_image.size());
+  task_data_omp->inputs_count.emplace_back(width);
+  task_data_omp->inputs_count.emplace_back(height);
+  task_data_omp->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  task_data_omp->outputs_count.emplace_back(output_image.size());
 
-  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_seq);
+  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_omp);
   ASSERT_FALSE(test_task_sequential.Validation());
 }
 
@@ -117,15 +117,15 @@ TEST(chistov_gauss_omp, test_invalid_output_size) {
   std::vector<double> input_image = {10, 20, 30, 40, 50, 60, 70, 80, 90};
   std::vector<double> output_image(8);
 
-  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
-  task_data_seq->inputs_count.emplace_back(input_image.size());
-  task_data_seq->inputs_count.emplace_back(width);
-  task_data_seq->inputs_count.emplace_back(height);
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
-  task_data_seq->outputs_count.emplace_back(output_image.size());
+  auto task_data_omp = std::make_shared<ppc::core::TaskData>();
+  task_data_omp->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
+  task_data_omp->inputs_count.emplace_back(input_image.size());
+  task_data_omp->inputs_count.emplace_back(width);
+  task_data_omp->inputs_count.emplace_back(height);
+  task_data_omp->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  task_data_omp->outputs_count.emplace_back(output_image.size());
 
-  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_seq);
+  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_omp);
   ASSERT_FALSE(test_task_sequential.Validation());
 }
 
@@ -135,15 +135,15 @@ TEST(chistov_gauss_omp, test_too_small_image) {
   std::vector<double> input_image;
   std::vector<double> output_image;
 
-  auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
-  task_data_seq->inputs_count.emplace_back(input_image.size());
-  task_data_seq->inputs_count.emplace_back(width);
-  task_data_seq->inputs_count.emplace_back(height);
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
-  task_data_seq->outputs_count.emplace_back(output_image.size());
+  auto task_data_omp = std::make_shared<ppc::core::TaskData>();
+  task_data_omp->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
+  task_data_omp->inputs_count.emplace_back(input_image.size());
+  task_data_omp->inputs_count.emplace_back(width);
+  task_data_omp->inputs_count.emplace_back(height);
+  task_data_omp->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  task_data_omp->outputs_count.emplace_back(output_image.size());
 
-  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_seq);
+  chistov_gauss_omp::TestTaskOpenMP test_task_sequential(task_data_omp);
   ASSERT_FALSE(test_task_sequential.Validation());
 }
 
@@ -159,8 +159,8 @@ std::vector<double> expected_image = {10.0, 20.0, 20.0, 32.5, 50.0, 42.5, 55.0, 
 
   std::vector<double> kernel = {1, 2, 1};
 
-  auto task_data_seq = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
-  chistov_gauss_omp_test::RunImageFilterTest(task_data_seq);
+  auto task_data_omp = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
+  chistov_gauss_omp_test::RunImageFilterTest(task_data_omp);
   chistov_gauss_omp_test::CompareImages(output_image, expected_image, width, height);
 }
 
@@ -176,8 +176,8 @@ TEST(chistov_gauss_omp, test_non_standard_kernel) {
 
   std::vector<double> kernel = {2, 4, 2};
 
-  auto task_data_seq = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
-  chistov_gauss_omp_test::RunImageFilterTest(task_data_seq);
+  auto task_data_omp = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
+  chistov_gauss_omp_test::RunImageFilterTest(task_data_omp);
   chistov_gauss_omp_test::CompareImages(output_image, expected_image, width, height);
 }
 
@@ -195,8 +195,8 @@ TEST(chistov_gauss_omp, test_different_width_and_height) {
 
   std::vector<double> kernel = {1, 2, 1};
 
-  auto task_data_seq = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
-  chistov_gauss_omp_test::RunImageFilterTest(task_data_seq);
+  auto task_data_omp = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
+  chistov_gauss_omp_test::RunImageFilterTest(task_data_omp);
   chistov_gauss_omp_test::CompareImages(output_image, expected_image, width, height);
 }
 
@@ -208,8 +208,8 @@ TEST(chistov_gauss_omp, test_zero_values_image) {
   std::vector<double> expected_image(width * height, 0.0);
   std::vector<double> kernel = {1, 2, 1};
 
-  auto task_data_seq = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
-  chistov_gauss_omp_test::RunImageFilterTest(task_data_seq);
+  auto task_data_omp = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
+  chistov_gauss_omp_test::RunImageFilterTest(task_data_omp);
   chistov_gauss_omp_test::CompareImages(output_image, expected_image, width, height);
 }
 
@@ -226,7 +226,7 @@ TEST(chistov_gauss_omp, test_max_pixel_values_image) {
       expected_image[((i + 1) * width) - 1] = 191.25;
   }
 
-  auto task_data_seq = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
-  chistov_gauss_omp_test::RunImageFilterTest(task_data_seq);
+  auto task_data_omp = chistov_gauss_omp_test::CreateTaskData(input_image, output_image, kernel, width, height);
+  chistov_gauss_omp_test::RunImageFilterTest(task_data_omp);
   chistov_gauss_omp_test::CompareImages(output_image, expected_image, width, height);
 }

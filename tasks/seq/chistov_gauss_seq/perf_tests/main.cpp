@@ -14,35 +14,28 @@ TEST(chistov_gauss_seq, test_pipeline_run) {
   const size_t width = 6000;
   const size_t height = 6000;
 
-  // Create data
-  std::vector<double> in(width * height, 1);
-  std::vector<double> out(width * height, 0);
+  std::vector<double> input_image(width * height, 255.0);
+  std::vector<double> output_image(width * height, 0.0);
+  std::vector<double> expected_image(width * height, 255.0);
   std::vector<double> kernel = {1, 2, 1};
 
   for (size_t i = 0; i < height; ++i) {
-    for (size_t j = 0; j < width / 2; ++j) {
-      in[(i * width) + j] = 0.0;
-    }
-    for (size_t j = width / 2; j < width; ++j) {
-      in[(i * width) + j] = 1.0;
-    }
+    expected_image[(i * width)] = 191.25;
+    expected_image[((i + 1) * width) - 1] = 191.25;
   }
 
   // Create task_data
-
-
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(kernel.data()));
-  task_data_seq->inputs_count.emplace_back(in.size());
+  task_data_seq->inputs_count.emplace_back(input_image.size());
   task_data_seq->inputs_count.emplace_back(width);
   task_data_seq->inputs_count.emplace_back(height);
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  task_data_seq->outputs_count.emplace_back(out.size());
+  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  task_data_seq->outputs_count.emplace_back(output_image.size());
 
   // Create Task
-  auto test_task_sequential =
-      std::make_shared<chistov_gauss_seq::TestTaskSequential>(task_data_seq);
+  auto test_task_sequential = std::make_shared<chistov_gauss_seq::TestTaskSequential>(task_data_seq);
 
   // Create Perf attributes
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
@@ -61,36 +54,33 @@ TEST(chistov_gauss_seq, test_pipeline_run) {
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_task_sequential);
   perf_analyzer->PipelineRun(perf_attr, perf_results);
   ppc::core::Perf::PrintPerfStatistic(perf_results);
+
+  ASSERT_EQ(output_image, expected_image);
 }
 
 TEST(chistov_gauss_seq, test_task_run) {
   const size_t width = 6000;
   const size_t height = 6000;
 
-  // Create data
-  std::vector<double> in(width * height, 1);
-  std::vector<double> out(width * height, 0);
+  std::vector<double> input_image(width * height, 255.0);
+  std::vector<double> output_image(width * height, 0.0);
+  std::vector<double> expected_image(width * height, 255.0);
   std::vector<double> kernel = {1, 2, 1};
 
   for (size_t i = 0; i < height; ++i) {
-    for (size_t j = 0; j < width / 2; ++j) {
-      in[(i * width) + j] = 0.0;
-    }
-    for (size_t j = width / 2; j < width; ++j) {
-      in[(i * width) + j] = 1.0;
-    }
+    expected_image[(i * width)] = 191.25;
+    expected_image[((i + 1) * width) - 1] = 191.25;
   }
 
   // Create task_data
-
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
-  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_image.data()));
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(kernel.data()));
-  task_data_seq->inputs_count.emplace_back(in.size());
+  task_data_seq->inputs_count.emplace_back(input_image.size());
   task_data_seq->inputs_count.emplace_back(width);
   task_data_seq->inputs_count.emplace_back(height);
-  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  task_data_seq->outputs_count.emplace_back(out.size());
+  task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  task_data_seq->outputs_count.emplace_back(output_image.size());
 
   // Create Task
   auto test_task_sequential = std::make_shared<chistov_gauss_seq::TestTaskSequential>(task_data_seq);
@@ -112,4 +102,6 @@ TEST(chistov_gauss_seq, test_task_run) {
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(test_task_sequential);
   perf_analyzer->TaskRun(perf_attr, perf_results);
   ppc::core::Perf::PrintPerfStatistic(perf_results);
+
+  ASSERT_EQ(output_image, expected_image);
 }
