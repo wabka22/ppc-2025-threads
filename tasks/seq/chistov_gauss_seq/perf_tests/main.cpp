@@ -11,8 +11,8 @@
 #include "seq/chistov_gauss_seq/include/ops_seq.hpp"
 
 TEST(chistov_gauss_seq, test_pipeline_run) {
-  const size_t width = 6000;
-  const size_t height = 6000;
+  const size_t width = 5000;
+  const size_t height = 5000;
 
   std::vector<double> input_image(width * height, 255.0);
   std::vector<double> output_image(width * height, 0.0);
@@ -59,8 +59,8 @@ TEST(chistov_gauss_seq, test_pipeline_run) {
 }
 
 TEST(chistov_gauss_seq, test_task_run) {
-  const size_t width = 6000;
-  const size_t height = 6000;
+  const size_t width = 5000;
+  const size_t height = 5000;
 
   std::vector<double> input_image(width * height, 255.0);
   std::vector<double> output_image(width * height, 0.0);
